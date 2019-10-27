@@ -13,7 +13,9 @@ include_directories(SYSTEM ${GTEST_INCLUDE_DIRS})
 set(SOURCE_PATH "${PROJECT_SOURCE_DIR}/src")
 set(TEST_PATH "${PROJECT_SOURCE_DIR}/tests")
 
-add_executable(matrix ${SOURCE_PATH}/main.cpp)
+add_executable(matrix ${SOURCE_PATH}/main.cpp
+                      ${SOURCE_PATH}/matrix.cpp
+)
 #add_library(lib_print_ip ${SOURCE_PATH}/printip.cpp)
 #add_executable(test_printip  ${TEST_PATH}/gtest.cpp)
 
