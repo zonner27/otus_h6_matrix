@@ -1,0 +1,41 @@
+language: cpp
+dist: xenial
+compiler: clang
+
+before_script:
+  - sudo apt-get install libgtest-dev -y 
+  - sudo apt-get install graphviz
+  - echo "deb http://archive.ubuntu.com/ubuntu xenial main universe" | sudo tee -a /etc/apt/sources.list
+  - sudo apt-get update -qq
+
+before_install:
+  - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
+
+install: 
+  - sudo apt-get install -qq g++-7
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 9
+
+script:
+  - mkdir ~/googletest
+  - cd ~/googletest
+  - wget https://github.com/google/googletest/archive/release-1.8.1.tar.gz
+  - tar xfz ./release-1.8.1.tar.gz
+  - cd ./googletest-release-1.8.1/
+  - cmake -DBUILD_SHARE_LIB=ON .
+  - make
+  - sudo cp -a ./googletest/include/gtest /usr/include
+  - sudo cp -a ./googlemock/gtest/libgtest.a /usr/lib
+  - sudo cp -a ./googlemock/gtest/libgtest_main.a /usr/lib
+  - cd $TRAVIS_BUILD_DIR
+  - cmake .
+  - cmake --build .
+  - cmake --build . --target test
+  - cmake --build . --target package
+
+
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script:
+    - curl -T matrix-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb -uzonner27:$BINTRAY_API_KEY "https://api.bintray.com/content/zonner27/otus-cpp/matrix/$TRAVIS_BUILD_NUMBER/matrix-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb;deb_distribution=trusty;deb_component=main;deb_architecture=amd64;publish=1"
