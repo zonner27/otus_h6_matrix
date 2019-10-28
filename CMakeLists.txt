@@ -16,41 +16,39 @@ set(TEST_PATH "${PROJECT_SOURCE_DIR}/tests")
 add_executable(matrix ${SOURCE_PATH}/main.cpp
                       ${SOURCE_PATH}/matrix.cpp
 )
-#add_library(lib_print_ip ${SOURCE_PATH}/printip.cpp)
-#add_executable(test_printip  ${TEST_PATH}/gtest.cpp)
+add_executable(test_matrix  ${TEST_PATH}/gtest.cpp)
 
-#target_link_libraries(print_ip lib_print_ip)
-#find_package(Threads)
-#target_link_libraries(test_printip ${GTEST_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} lib_print_ip)
+find_package(Threads)
+target_link_libraries(test_matrix ${GTEST_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 set_target_properties(
     matrix
-#    test_printip
+    test_matrix
     PROPERTIES
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON
 )
 
-#set_target_properties(
-#    test_printip
-#    PROPERTIES
-#        INCLUDE_DIRECTORIES ${SOURCE_PATH}
-#)
+set_target_properties(
+    test_matrix
+    PROPERTIES
+        INCLUDE_DIRECTORIES ${SOURCE_PATH}
+)
 
 if (MSVC)
     target_compile_options(matrix PRIVATE
         /W4
     )
-#    target_compile_options(test_printip PRIVATE
-#       /W4
-#    )
+    target_compile_options(test_matrix PRIVATE
+       /W4
+    )
 else ()
     target_compile_options(matrix PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
-#   target_compile_options(test_printip PRIVATE
-#       -Wall -Wextra -pedantic -Werror
-#    )
+   target_compile_options(test_matrix PRIVATE
+       -Wall -Wextra -pedantic -Werror
+    )
 endif()
 
 install(TARGETS matrix RUNTIME DESTINATION bin)
@@ -65,6 +63,6 @@ set(CPACK_PACKAGE_CONTACT zonner2785@gmail.com)
 
 include(CPack)
 
-#enable_testing()
+enable_testing()
 
-#add_test(NAME test_printip COMMAND test_printip)
+add_test(NAME test_matrix COMMAND test_matrix)
